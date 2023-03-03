@@ -1,73 +1,39 @@
-# Turborepo starter
+### Scenario:
 
-This is an official pnpm starter turborepo.
+Build a minimal app for an online marketplace application. The app will be used to manage Product listings, and Order transactions. The app should implement the following functionality:
 
-## What's inside?
+1. Create a new Product.
+1. View a single products details.
+1. View a single products order details (if it exits).
+1. View X amount of products that are sortable by either created date or price
+1. Ability to purchase the product
+1. Delete a Product (For testing purposes, deleting a Product should also delete the Order associated with it, if it exists)
 
-This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
+**You can come up with any frontend design you like**
+**You will need to implement both the server and the frontend**
+**No authentication is required**
+**Products should be a One-to-One relationship with Orders.**
 
-### Apps and Packages
+### Technical notes
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- Frontend app `/apps/frontend` (`http://localhost:5173`)
+- Rest server `/apps/server` (`http://localhost:3000`)
+- Run both apps from the root `pnpm run dev`
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+#### Notes:
 
-### Utilities
+1. Use any library/tooling that you would like. (React Router, Redux, ChakraUI etc)
+1. If I try purchase a Product that has already been sold, the endpoint should return an error.
+1. Use the mocked database in `./data/Database` to manage all data
+1. Implement input validation for all endpoints
+1. Implement error handling for all endpoints
+1. Write tests for critical paths
 
-This turborepo has some additional tools already setup for you:
+#### Instructions:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Clone this repository and create a new branch with your name
+Complete the test and push your code to your branch
+Add a description in your PR with instructions on how to run your applications and any tests
+Create a pull request and include any relevant information in the description
 
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm run build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm run dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-pnpm dlx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
-
-```
-pnpm dlx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+Let Ash know once it's complete
