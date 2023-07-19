@@ -36,4 +36,4 @@ Complete the test and push your code to your branch
 Add a description in your PR with instructions on how to run your applications and any tests
 Create a pull request and include any relevant information in the description
 
-Let Ash know once it's complete
+Let Askable know once it's complete
