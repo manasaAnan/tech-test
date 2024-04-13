@@ -15,4 +15,24 @@ export class Database {
   static async getUsers() {
     return this.data.users;
   }
+
+}
+
+export async function readProducts() {
+  const productList : Array <any> = []
+  const result = Database.getProducts();
+  productList.push(result);
+  console.log(result);
+  return result;
+
+  /*const products = [];
+  const result = await Database.getProducts();
+  products.push(result);
+  return products;*/
+
+  /*products.push(Database.getProducts())
+  return Promise.all(products).then(result => {
+    products = result;
+  })*/
+  
 }

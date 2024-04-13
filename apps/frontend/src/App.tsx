@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { UsersPage } from "./pages/users/UsersPage";
 import { RootPage } from "./pages/root/RootPage";
+import { ProductsPage } from "./pages/products/ProductsPage";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/products",
-    element: <div>Your product app will be here!</div>,
+    element:  <ProductsPage />,
   },
 ]);
 
