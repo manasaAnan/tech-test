@@ -79,7 +79,7 @@ export const ProductsPage = () => {
   };
 
   const filteredProducts = products.filter((product) => {
-    return product.title.toLowerCase().includes(search.toLowerCase());
+    return product.title.toLowerCase().includes(search.toLowerCase()) || product.category.toLowerCase().includes(search.toLowerCase());
   });
 
   return (
