@@ -1,17 +1,24 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { readProducts } from "../../../../server/data/Database";
-
-type Props = {
-  isSelected: boolean;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  product: {
+import React, { ChangeEvent, useEffect, useState, useRef } from "react";
+type Product = {
     _id: string;
     title: string;
     order_id: string;
     created_at: string;
     category: string;
     price: string;
-  };
+}
+type Props = {
+  isSelected: boolean;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  /*product: {
+    _id: string;
+    title: string;
+    order_id: string;
+    created_at: string;
+    category: string;
+    price: string;
+  };*/
+  product: Product;
 };
 
 const ProductItem = ({ product, isSelected, onChange }: Props) => {
@@ -30,7 +37,7 @@ const ProductItem = ({ product, isSelected, onChange }: Props) => {
     >
       <input onChange={onChange} checked={isSelected} type="checkbox" />
       <div>
-        <ul>
+        <ul key={product._id}>
           <div>
             {title} 
           </div>
@@ -49,28 +56,30 @@ const ProductItem = ({ product, isSelected, onChange }: Props) => {
   );
 };
 
-export const ProductsPage = () => {
-  const [products, setProducts] = useState<Props["product"][] | null>(null);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/products");
-
-        const data = await response.json();
-        setProducts(data);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  if (products === null) {
+const ProductsComponent = (productList : Product[] | null) => {
+  //add a listener here to wait for productList to fully load
+  if (productList === null) {
     return <div>Loading...</div>;
   }
+  const [products, setProducts] = useState(productList);
+  const [sortable, setSortable] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  //const toggleSortActiveHandler = () => setSortable(a => !a);
+
+  useEffect(() => {
+    if (sortable && products) {
+      setProducts(
+        products?.sort((a,b) => {
+          return new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf();
+        }))
+    } else {
+      setProducts(products);
+    }
+  }, [sortable]);
+
+
+  
 
   const selectedProduct = products.find((product) => product._id === selected);
 
@@ -82,7 +91,12 @@ export const ProductsPage = () => {
     return product.title.toLowerCase().includes(search.toLowerCase()) || product.category.toLowerCase().includes(search.toLowerCase());
   });
 
-  return (
+  /*const filterProductsCreatedBy = products.sort((a,b) => {
+      return new Number(a.price).valueOf() - new Number(b.price).valueOf();;
+    });*/
+
+  
+    return (
     <div
       style={{ display: "flex", flexDirection: "column", position: "relative" }}
     >
@@ -102,10 +116,58 @@ export const ProductsPage = () => {
           placeholder="Search..."
           style={{ marginBottom: 20 }}
         />
+        <div>Created by date</div>
+          <button
+            type="button" onClick={() => setSortable(!sortable)}
+          >
+            Click to sort by created date
+            
+          </button>
+          <div>Price sort</div>
+          <button
+           onClick={() => {
+            console.log("price sort clicked");
+            products.sort((a,b) => {
+              
+              return new Number(a.price).valueOf() - new Number(b.price).valueOf();
+            }).map((product) => {
+              return <ProductItem onChange={() => handleChange(product._id)} product={product} isSelected={selected === product?._id} />;
+            }
+            )
+            }
+           }
+          >
+            Click to sort by price
+            
+          </button>
       </div>
       {filteredProducts?.map((product) => {
         return <ProductItem onChange={() => handleChange(product._id)} product={product} isSelected={selected === product?._id} />;
       })}
     </div>
   );
+
+}
+
+export const ProductsPage = () => {
+  //const [products, setProducts] = useState(null);
+  let products = null;
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/products");
+
+        products = await response.json();
+        //setProducts(data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    console.log("@@@@@@@ we are in fetch");
+    fetchProducts();
+  }, []);
+  console.log("------Product list after fetch " + products)
+  return ProductsComponent(products)
+  
 };

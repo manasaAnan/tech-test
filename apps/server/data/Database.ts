@@ -19,9 +19,9 @@ export class Database {
 }
 
 export async function readProducts() {
-  const productList : Array <any> = []
-  const result = Database.getProducts();
-  productList.push(result);
+  //const productList : Array <any> = []
+  const result = await Database.getProducts();
+  //productList.push(result);
   console.log(result);
   return result;
 

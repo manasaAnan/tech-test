@@ -15,6 +15,8 @@ app.get("/users", async (req, res) => {
   res.send(await Database.getUsers());
 });
 
+//add update
+
 app.listen({ port }, () => {
   console.log(`Listening on port ${port}`);
 });
