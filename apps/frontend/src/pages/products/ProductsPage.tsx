@@ -1,24 +1,24 @@
 import React, { ChangeEvent, useEffect, useState, useRef } from "react";
-type Product = {
+/*type Product = {
     _id: string;
     title: string;
     order_id: string;
     created_at: string;
     category: string;
     price: string;
-}
+}*/
 type Props = {
   isSelected: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  /*product: {
+  product: {
     _id: string;
     title: string;
     order_id: string;
     created_at: string;
     category: string;
     price: string;
-  };*/
-  product: Product;
+  };
+  //product: Product;
 };
 
 const ProductItem = ({ product, isSelected, onChange }: Props) => {
@@ -151,15 +151,43 @@ const ProductsComponent = (productList : Product[] | null) => {
 
 export const ProductsPage = () => {
   //const [products, setProducts] = useState(null);
-  let products = null;
+  //let products = null;
+
+  const [products, setProducts] = useState<Props["product"][] | null>(null);
+  const [sortable, setSortable] = useState(false);
+  const [sortablePrice, setSortablePrice] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (sortable && products) {
+      setProducts(
+        products?.sort((a,b) => {
+          return new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf();
+        }))
+    } else {
+      setProducts(products);
+    }
+  }, [sortable]);
+
+  useEffect(() => {
+    if (sortablePrice && products) {
+      setProducts(
+        products?.sort((a,b) => {
+          return new Number(a.price).valueOf() - new Number(b.price).valueOf();
+        }))
+    } else {
+      setProducts(products);
+    }
+  }, [sortablePrice]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch("http://localhost:3000/products");
 
-        products = await response.json();
-        //setProducts(data);
+        const data = await response.json();
+        setProducts(data);
       } catch (e) {
         console.log(e);
       }
@@ -167,7 +195,67 @@ export const ProductsPage = () => {
     console.log("@@@@@@@ we are in fetch");
     fetchProducts();
   }, []);
-  console.log("------Product list after fetch " + products)
-  return ProductsComponent(products)
+
+  if (products === null) {
+    return <div>Loading...</div>;
+  }
+
+  const selectedProduct = products.find((product) => product._id === selected);
+
+  const handleChange = (id: string) => {
+    setSelected(id);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    return product.title.toLowerCase().includes(search.toLowerCase()) || product.category.toLowerCase().includes(search.toLowerCase());
+  });
+
+  /*const filterProductsCreatedBy = products.sort((a,b) => {
+      return new Number(a.price).valueOf() - new Number(b.price).valueOf();;
+    });*/
+
+  
+    return (
+    <div
+      style={{ display: "flex", flexDirection: "column", position: "relative" }}
+    >
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "white",
+          width: "100%",
+        }}
+      >
+        <h1>
+          Selected product: {selectedProduct?.title ?? "No product selected"}
+        </h1>
+        <input
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search..."
+          style={{ marginBottom: 20 }}
+        />
+        <div>Created by date</div>
+          <button
+            type="button" onClick={() => setSortable(!sortable)}
+          >
+            Click to sort by created date
+            
+          </button>
+          <div>Price sort</div>
+          <button
+            type="button" onClick={() => setSortablePrice(!sortablePrice)}
+          >
+            Click to sort by price
+            
+          </button>
+      </div>
+      {filteredProducts?.map((product) => {
+        return <ProductItem onChange={() => handleChange(product._id)} product={product} isSelected={selected === product?._id} />;
+      })}
+    </div>
+  );
+  /*console.log("------Product list after fetch " + products)
+  return ProductsComponent(products)*/
   
 };
