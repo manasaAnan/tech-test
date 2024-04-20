@@ -1,12 +1,15 @@
 import React, { ChangeEvent, useEffect, useState, useRef } from "react";
-/*type Product = {
+type Product = {
     _id: string;
     title: string;
     order_id: string;
     created_at: string;
     category: string;
     price: string;
-}*/
+}
+type Order = {
+  product_id: string;
+}
 type Props = {
   isSelected: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -154,10 +157,12 @@ export const ProductsPage = () => {
   //let products = null;
 
   const [products, setProducts] = useState<Props["product"][] | null>(null);
+  const [orders, setOrders] = useState<Order [] | null>(null);
   const [sortable, setSortable] = useState(false);
   const [sortablePrice, setSortablePrice] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [purchase, setPurchase] = useState(false);
 
   useEffect(() => {
     if (sortable && products) {
@@ -196,11 +201,30 @@ export const ProductsPage = () => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const ordersResponse = await fetch("http://localhost:3000/orders");
+
+        const ordersData = await ordersResponse.json();
+        setOrders(ordersData);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchOrders();
+  }, []);
+
   if (products === null) {
     return <div>Loading...</div>;
   }
 
+  console.log("#######orders " + orders);
+  console.log('%%%%%%%% products ' + products);
+
   const selectedProduct = products.find((product) => product._id === selected);
+
+  const selectedOrder = orders?.find((order) => order.product_id === selected);
 
   const handleChange = (id: string) => {
     setSelected(id);
@@ -210,9 +234,6 @@ export const ProductsPage = () => {
     return product.title.toLowerCase().includes(search.toLowerCase()) || product.category.toLowerCase().includes(search.toLowerCase());
   });
 
-  /*const filterProductsCreatedBy = products.sort((a,b) => {
-      return new Number(a.price).valueOf() - new Number(b.price).valueOf();;
-    });*/
 
   
     return (
@@ -247,6 +268,19 @@ export const ProductsPage = () => {
             type="button" onClick={() => setSortablePrice(!sortablePrice)}
           >
             Click to sort by price
+            
+          </button>
+          <div>
+        Purchase details: {selectedProduct?.order_id ? selectedProduct?.order_id : "No product selected / Selected product is not available to purchase"}
+        </div>
+        <div>
+        Order details: {selectedOrder?.product_id ?? "No order exists"}
+        </div>
+          <div>Purchase</div>
+          <button
+            type="button" onClick={() => setPurchase(!purchase)}
+          >
+            Click to purchase item
             
           </button>
       </div>

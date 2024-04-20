@@ -1,3 +1,4 @@
+import { Product, Order } from './../generators/productsGenerators';
 import { generateProductData } from "../generators/productsGenerators";
 import { generateUserData } from "../generators/usersGenerator";
 
@@ -15,6 +16,19 @@ export class Database {
   static async getUsers() {
     return this.data.users;
   }
+
+  static async getOrders() {
+    return this.data.orders;
+  }
+
+  static async createProduct(prod : Product) {
+    return prod;
+  }
+
+  static async createOrder(order : string) {
+    return order;
+  }
+
 
 }
 
