@@ -22,14 +22,23 @@ app.get("/orders", async (req, res) => {
 });
 
 //creates new order
-/*app.post<{
+app.post<{
   Body : Order
 }>('/products', async (req, res) => {
-  const order = Database.createOrder(req.body.product_id)
+  const productID = req.body.product_id;
+  /*app.query(`INSERT INTO orders.product_id VALUES(${productID})`, (error, result) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("successfully inserted values into orders")
+      res.code(200).send({productID})
+    }
+  })*/  
+  /*const order = Database.createOrder(req.body.product_id)
   await order.save();
-  res.code(200).send({order})
+  res.code(200).send({order})*/
 
-})*/
+})
 
 app.listen({ port }, () => {
   console.log(`Listening on port ${port}`);
